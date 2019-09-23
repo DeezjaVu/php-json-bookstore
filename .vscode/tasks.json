@@ -1,0 +1,28 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Chrome localhost",
+            "type": "process",
+            "command": "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe",
+            "args": [
+                "http://localhost:9090/gip/php-json-crud"
+            ],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "FF localhost",
+            "type": "process",
+            "command": "C:/Program Files/Mozilla Firefox/firefox.exe",
+            "args": [
+                "http://localhost:9090/gip/php-json-crud"
+            ],
+            "group": "test"
+        }
+    ]
+}

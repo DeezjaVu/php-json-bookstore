@@ -1,0 +1,58 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    background-color: rgb(245, 245, 245);
+    box-shadow: 0 5px 15px 0 rgba(0, 0, 0, 0.35);
+    border: 1px solid #454d55;
+    padding: 0;
+}
+
+.container > header {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+.container > header > .logo {
+    font-size: 1.6rem;
+    padding: 1rem;
+    width: 60px;
+    height: 60px;
+}
+
+.d-flex button {
+    margin: 1.5em 0.5em;
+    /* padding: 0.3em 1.4em; */
+}
+
+.success {
+    background-color: rgb(144, 238, 144);
+    padding: 1em;
+}
+
+.error {
+    background-color: rgb(255, 99, 71);
+    padding: 1em;
+}
+
+.td-price:before {
+    content: "€ ";
+}
+
+.input-group-text > i.fa, i.fas {
+    width: 16px;
+}
+
+.table {
+    margin: 0;
+}
+
+.btn-hide {
+    display: none;
+    visibility: hidden;
+}
