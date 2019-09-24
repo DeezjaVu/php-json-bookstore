@@ -36,15 +36,16 @@ window.addEventListener('DOMContentLoaded', (event) => {
         const valPrice = parseFloat(inPrice.value);
 
         // FIXME: validate input (or not)
-        values = {
+        const book = {
             title: valTitle,
             author: valAuthor,
             publisher: valPub,
             price: valPrice
         }
-        console.log(' - values:', values);
+        console.log(' - add book:', book);
 
-        addBookAsync(values).then(showBooks);
+        addBookAsync(book).then(showBooks);
+        clearForm();
     });
 
     const btnClear = document.body.querySelector('#btn-clear');
@@ -58,10 +59,51 @@ window.addEventListener('DOMContentLoaded', (event) => {
 
     const btnUpdate = document.body.querySelector('#btn-update');
     btnUpdate.classList.add('btn-hide');
-    btnUpdate.addEventListener('click', (event) => {
+    btnUpdate.addEventListener('click', async (event) => {
         console.log("DOC ::: btn-update click");
         event.preventDefault();
         const t = event.target;
+        const inId = document.body.querySelector('input[name="book-id"]');
+        const inTitle = document.body.querySelector('input[name="book-title"]');
+        const inAuthor = document.body.querySelector('input[name="book-author"]');
+        const inPub = document.body.querySelector('input[name="book-pub"]');
+        const inPrice = document.body.querySelector('input[name="book-price"]');
+
+        const valId = inId.value;
+        const valTitle = inTitle.value;
+        const valAuthor = inAuthor.value;
+        const valPub = inPub.value;
+        const valPrice = parseFloat(inPrice.value);
+
+        // FIXME: validate input (or not).
+        const book = {
+            id: valId,
+            title: valTitle,
+            author: valAuthor,
+            publisher: valPub,
+            price: valPrice
+        }
+        console.log(' - update book:', book);
+
+        // updateBookAsync(book).then(showBooks);
+        const books = await updateBookAsync(book);
+        console.log(' - books:', books);
+        // Display updated books.
+        showBooks(books);
+
+        const subTitle = document.body.querySelector('#sub-title');
+        subTitle.innerText = "Add Book";
+
+        btnUpdate.classList.add('btn-hide');
+        btnCancel.classList.add('btn-hide');
+
+        btnCreate.classList.remove('btn-hide');
+        btnClear.classList.remove('btn-hide');
+
+        setButtonState(STATE_CREATE);
+
+        clearForm();
+
     });
 
     const btnCancel = document.body.querySelector('#btn-cancel');
@@ -83,7 +125,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
 
     clearForm();
 
-    getBooks().then(showBooks);
+    getBooksAsync().then(showBooks);
 
 });
 
@@ -114,6 +156,26 @@ function clearForm() {
     const bookPub = frm.querySelector('input[name="book-pub"]');
     bookPub.value = "";
 
+}
+
+function setButtonState(state) {
+    console.log("DOC ::: setButtonState");
+    console.log(' - state:', state);
+
+    const btnUpdate = document.body.querySelector();
+
+    if (state === STATE_CREATE) {
+        const subTitle = document.body.querySelector('#sub-title');
+        subTitle.innerText = "Add Book";
+
+        btnUpdate.classList.add('btn-hide');
+        btnCancel.classList.add('btn-hide');
+
+        btnCreate.classList.remove('btn-hide');
+        btnClear.classList.remove('btn-hide');
+
+
+    }
 }
 
 /**
@@ -162,11 +224,14 @@ function showBooks(books) {
  */
 function editBookClickHandler(event) {
     console.log("DOC ::: editBookClickHandler");
-    // Use currentTarget to avoid getting child nodes
+
+    // Use currentTarget to avoid getting child node(s), e.g. the button icon.
     let t = event.currentTarget;
     console.log(' - target:', t);
+
     const inp = t.parentNode.querySelector('input');
     console.log(' - input:', inp);
+
     const val = inp.value;
     let data = JSON.parse(val);
     console.log(' - data:', data);
@@ -214,26 +279,40 @@ function editBookClickHandler(event) {
  */
 function deleteBookClickHandler(event) {
     console.log("DOC ::: deleteBookClickHandler");
+
     let t = event.currentTarget;
     console.log(' - target:', t);
+
     const inp = t.parentNode.querySelector('input');
     console.log(' - input:', inp);
+
     const data = inp.value;
     console.log(' - data:', data);
+
     const book = JSON.parse(data);
 
-    let msg = "Are you sure you want to delete this book?";
-    msg += "<p><pre>";
-    msg += "Title:" + book.title;
-    msg += "<br>";
-    msg += "Author: " + book.author;
-    msg += "</pre></p>";
+    const msg = `
+    <div class="container">
+        <h6>Are you sure you want to delete this book?</h6>
+        <div class="row">
+            <div class="col-2 text-right">Title:</div>
+            <div class="col"><code>${book.title}</code></div>
+        </div>
+        <div class="row">
+            <div class="col-2 text-right">Author:</div>
+            <div class="col"><code>${book.author}</code></div>
+        </div>
+    </div>`;
 
-    bootbox.confirm(msg, (confirmed) => {
-        console.log("DOC ::: bootbox confirm");
-        console.log(' - confirmed:', confirmed);
-        if (confirmed) {
-            deleteBook(data).then(showBooks);
+    bootbox.confirm({
+        title: "Delete Book:",
+        message: msg,
+        callback: (confirmed) => {
+            console.log("DOC ::: bootbox confirm");
+            console.log(' - confirmed:', confirmed);
+            if (confirmed) {
+                // deleteBook(data).then(showBooks);
+            }
         }
     });
 
@@ -246,12 +325,12 @@ function deleteBookClickHandler(event) {
  ************************/
 
 /**
- * Fetches book data from PHP
+ * Fetches book data from PHP.
  * 
  * @returns Resolved Promise with list of books payload.
  */
-async function getBooks() {
-    console.log("DOC ::: getBooks");
+async function getBooksAsync() {
+    console.log("DOC ::: getBooksAsync");
     let response = await fetch(BOOKS_READ_URL);
     let json = await response.json();
     console.log(' - json:', json);
@@ -268,21 +347,21 @@ async function getBooks() {
 async function addBookAsync(book) {
     console.log("DOC ::: addBook");
     console.log(' - book:', book);
-    let json = JSON.stringify(book);
+    const json = JSON.stringify(book);
     console.log(' - json:', json);
-    let headers = {
+    const headers = {
         'Accept': 'application/json, text/plain, */*',
         'Content-Type': 'application/json'
     }
     // Send data to PHP
-    let response = await fetch(BOOKS_CREATE_URL,
+    const response = await fetch(BOOKS_CREATE_URL,
         {
             method: "POST",
             headers: headers,
             body: json
         });
 
-    let data = await response.json();
+    const data = await response.json();
     return data;
 }
 
@@ -291,9 +370,21 @@ async function addBookAsync(book) {
  *
  * @param {*} book The updated book.
  */
-async function updateBook(book) {
-    console.log("DOC ::: updateBook");
-
+async function updateBookAsync(book) {
+    console.log("DOC ::: updateBookAsync");
+    const jbook = JSON.stringify(book);
+    const headers = {
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json'
+    }
+    const response = await fetch(BOOKS_UPDATE_URL,
+        {
+            method: "POST",
+            headers: headers,
+            body: jbook
+        });
+    const data = await response.json();
+    return data;
 }
 
 /**

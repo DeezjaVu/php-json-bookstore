@@ -2,9 +2,9 @@
 
 define("BOOKS_URL", "../data/books.json");
 
-// Read JSON file
+// Read JSON file.
 $json = file_get_contents(BOOKS_URL);
-// Decode books json to PHP data
+// Decode books json to PHP data.
 $books = json_decode($json);
 
 // Decode received data
@@ -24,7 +24,7 @@ $jbooks = json_encode($books);
 file_put_contents(BOOKS_URL, $jbooks);
 
 
-// Adjust header to output JSON data
+// Adjust header to output JSON data.
 header('Content-Type: application/json');
 
 echo $jbooks;

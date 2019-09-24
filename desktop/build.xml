@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<project name="PHP JSON CRUD" default="default" basedir="../">
+<project name="PHP JSON Bookstore" default="run-all" basedir="../">
 
-    <property name="DEST_PHP_DIR" location="D:/Projects/DeezjaVu/obelisk/php-json-crud" />
-    <property name="CHROME" location="C:/Program Files (x86)/Google/Chrome/Application/chrome.exe" />
-    <property name="FIREFOX" location="C:/Program Files (x86)/Mozilla Firefox/firefox.exe" />
+    <property name="DEST_PHP_DIR" location="D:/Projects/DeezjaVu/obelisk/php-json-bookstore" />
+    <property name="XAMPP_HOME" location="D:/xampp" />
 
-    <property name="LOCALHOST" value="http://localhost:9090/obelisk/php-json-crud" />
+    <property name="CHROME" value="C:/Program Files (x86)/Google/Chrome/Application/chrome.exe" />
+    <property name="FIREFOX" value="C:/Program Files (x86)/Mozilla Firefox/firefox.exe" />
+    <property name="LOCALHOST" value="http://localhost:9090/obelisk/php-json-bookstore" />
 
-    <target name="default" depends="dest-create,dest-clean,src-copy">
+    <target name="run-all" depends="dest-create,dest-clean,src-copy">
         <echo message="Copies php project file(s) to local php server." />
     </target>
 
@@ -44,12 +45,12 @@
     </target>
 
     <target name="apache-start" description="Start Apache Server">
-        <exec executable="D:/xampp/xampp_start.exe" spawn="false">
+        <exec executable="${XAMPP_HOME}/xampp_start.exe" spawn="false">
         </exec>
     </target>
 
     <target name="apache-stop" description="Start Apache Server">
-        <exec executable="D:/xampp/xampp_stop.exe" spawn="false">
+        <exec executable="${XAMPP_HOME}/xampp_stop.exe" spawn="false">
         </exec>
     </target>
 

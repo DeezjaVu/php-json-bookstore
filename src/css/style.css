@@ -3,22 +3,25 @@
 }
 
 body {
+    background-image: url('../img/grey.png');
+    background-repeat: repeat;
+    background-attachment: fixed;
     margin: 0;
     padding: 0;
 }
 
-.container {
+.main-container {
     background-color: rgb(245, 245, 245);
     box-shadow: 0 5px 15px 0 rgba(0, 0, 0, 0.35);
     border: 1px solid #454d55;
     padding: 0;
 }
 
-.container > header {
+.main-container > header {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
 }
 
-.container > header > .logo {
+.main-container > header > .logo {
     font-size: 1.6rem;
     padding: 1rem;
     width: 60px;
@@ -56,4 +59,8 @@ body {
 .btn-hide {
     display: none;
     visibility: hidden;
+}
+
+.modal-dialog {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
 }

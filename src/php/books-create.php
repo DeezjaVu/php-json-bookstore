@@ -7,7 +7,7 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 define("BOOKS_URL", "../data/books.json");
 
 // Read JSON file
-$books = file_get_contents(BOOKS_URL);
+$json = file_get_contents(BOOKS_URL);
 
 // Decode received data
 $data = json_decode(file_get_contents("php://input"));
@@ -16,14 +16,14 @@ $data = json_decode(file_get_contents("php://input"));
 $data->id = uniqid();
 
 // Decode existing books and add new book at the beginning of the list.
-$jbooks = json_decode($books);
-array_unshift($jbooks, $data);
+$books = json_decode($json);
+array_unshift($books, $data);
 
 // Encode back to json and write to file.
-$books = json_encode($jbooks);
-file_put_contents(BOOKS_URL, $books);
+$jbooks = json_encode($books);
+file_put_contents(BOOKS_URL, $jbooks);
 
-// Return the new data
-echo $books;
+// Return the new json data
+echo $jbooks;
 
 exit;
