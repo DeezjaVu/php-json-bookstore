@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="PHP JSON CRUD" default="default" basedir="../">
+
+    <property name="DEST_PHP_DIR" location="D:/Projects/DeezjaVu/obelisk/php-json-crud" />
+    <property name="CHROME" location="C:/Program Files (x86)/Google/Chrome/Application/chrome.exe" />
+    <property name="FIREFOX" location="C:/Program Files (x86)/Mozilla Firefox/firefox.exe" />
+
+    <property name="LOCALHOST" value="http://localhost:9090/obelisk/php-json-crud" />
+
+    <target name="default" depends="dest-create,dest-clean,src-copy">
+        <echo message="Copies php project file(s) to local php server." />
+    </target>
+
+    <target name="dest-create" description="Create server dir">
+        <echo message="Creating dir on local server." />
+        <mkdir dir="${DEST_PHP_DIR}" />
+    </target>
+
+    <target name="dest-clean" description="Clean House">
+        <echo message="Doing some housekeeping." />
+        <!-- delete all files in PHP target folder -->
+        <delete includeEmptyDirs="true">
+            <fileset dir="${DEST_PHP_DIR}" includes="**/*" />
+        </delete>
+    </target>
+
+    <target name="src-copy" description="Copy projects file(s) to local PHP server.">
+        <echo message="Copying src files to local server." />
+        <copy todir="${DEST_PHP_DIR}">
+            <fileset dir="${basedir}/src" />
+        </copy>
+    </target>
+
+    <target name="localhost-chrome" description="Open local PHP server.">
+        <exec executable="${CHROME}" spawn="true">
+            <arg value="${LOCALHOST}" />
+        </exec>
+    </target>
+
+    <target name="localhost-ff" description="Open local PHP server.">
+        <exec executable="${FIREFOX}" spawn="true">
+            <arg value="${LOCALHOST}" />
+        </exec>
+    </target>
+
+    <target name="apache-start" description="Start Apache Server">
+        <exec executable="D:/xampp/xampp_start.exe" spawn="false">
+        </exec>
+    </target>
+
+    <target name="apache-stop" description="Start Apache Server">
+        <exec executable="D:/xampp/xampp_stop.exe" spawn="false">
+        </exec>
+    </target>
+
+</project>

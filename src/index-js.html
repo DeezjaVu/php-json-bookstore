@@ -27,6 +27,8 @@
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.3.2/bootbox.min.js"></script>
+
     <script src="./js/main.js"></script>
 </head>
 
@@ -43,7 +45,7 @@
 
             <h2 id="sub-title">Add Book</h2>
 
-            <form action="" method="post" class="w-50">
+            <section id="form-container" class="w-50">
 
                 <div class="row pt-2">
 
@@ -53,8 +55,7 @@
                                 <i class="fas fa-id-badge"></i>
                             </div>
                         </div>
-                        <input type="text" name="book-id" value="" id="book-id" class="form-control" placeholder="id"
-                            readonly>
+                        <input type="text" name="book-id" id="book-id" class="form-control" placeholder="id" readonly>
                     </div>
 
                     <div class="input-group col mb-2">
@@ -63,8 +64,8 @@
                                 <i class="fas fa-dollar-sign"></i>
                             </div>
                         </div>
-                        <input type="number" name="book-price" value="" id="book-price" class="form-control"
-                            placeholder="0" min="0" max="1000" step="0.01">
+                        <input type="number" name="book-price" id="book-price" class="form-control" placeholder="0"
+                            min="0" max="1000" step="0.01">
                     </div>
                 </div>
 
@@ -75,8 +76,8 @@
                                 <i class="fas fa-book"></i>
                             </div>
                         </div>
-                        <input type="text" name="book-title" value="title" id="book-title" class="form-control"
-                            placeholder="title" required>
+                        <input type="text" name="book-title" id="book-title" class="form-control" placeholder="title"
+                            required>
                     </div>
                 </div>
 
@@ -87,8 +88,8 @@
                                 <i class="fas fa-user-edit"></i>
                             </div>
                         </div>
-                        <input type="text" name="book-author" value="author" id="book-author" class="form-control"
-                            placeholder="author" required>
+                        <input type="text" name="book-author" id="book-author" class="form-control" placeholder="author"
+                            required>
                     </div>
 
                 </div>
@@ -101,8 +102,8 @@
                                 <i class="fas fa-people-carry"></i>
                             </div>
                         </div>
-                        <input type="text" name="book-pub" value="publisher" id="book-pub" class="form-control"
-                            placeholder="publisher" required>
+                        <input type="text" name="book-pub" id="book-pub" class="form-control" placeholder="publisher"
+                            required>
                     </div>
 
                 </div>
@@ -116,7 +117,7 @@
                     <!-- <button id="btn-delete" class="btn btn-danger">Delete</button> -->
                 </div>
 
-            </form>
+            </section>
         </div>
 
         <!-- Bootstrap table  -->

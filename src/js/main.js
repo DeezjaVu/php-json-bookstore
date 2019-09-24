@@ -1,16 +1,21 @@
-
+// Constants for PHP script locations.
 const BOOKS_READ_URL = "./php/books-read.php";
 const BOOKS_CREATE_URL = "./php/books-create.php";
 const BOOKS_UPDATE_URL = "./php/books-update.php";
 const BOOKS_DELETE_URL = "./php/books-delete.php";
 
+// App state constants.
 const STATE_CREATE = "state-create";
 const STATE_READ = "state-read";
 const STATE_UPDATE = "state-update";
 const STATE_DELETE = "state-delete";
 
+// Keep track of app state
 let currentState = STATE_CREATE;
 
+/**
+ * All the things start here :)
+ */
 window.addEventListener('DOMContentLoaded', (event) => {
     console.log("DOC ::: DOMContentLoaded");
 
@@ -20,6 +25,26 @@ window.addEventListener('DOMContentLoaded', (event) => {
         console.log("DOC ::: btn-create click");
         event.preventDefault();
         const t = event.target;
+        const inTitle = document.body.querySelector('input[name="book-title"]');
+        const inAuthor = document.body.querySelector('input[name="book-author"]');
+        const inPub = document.body.querySelector('input[name="book-pub"]');
+        const inPrice = document.body.querySelector('input[name="book-price"]');
+
+        const valTitle = inTitle.value;
+        const valAuthor = inAuthor.value;
+        const valPub = inPub.value;
+        const valPrice = parseFloat(inPrice.value);
+
+        // FIXME: validate input (or not)
+        values = {
+            title: valTitle,
+            author: valAuthor,
+            publisher: valPub,
+            price: valPrice
+        }
+        console.log(' - values:', values);
+
+        addBookAsync(values).then(showBooks);
     });
 
     const btnClear = document.body.querySelector('#btn-clear');
@@ -67,7 +92,12 @@ window.addEventListener('DOMContentLoaded', (event) => {
  */
 function clearForm() {
     console.log("DOC ::: clearForm");
-    const frm = document.body.querySelector('form');
+
+    const frm = document.body.querySelector('#form-container');
+    // frm.reset();
+
+    // May remove the form element, in which case 
+    // all input fields have to be reset directly
 
     const bookId = frm.querySelector('input[name="book-id"]');
     bookId.value = "";
@@ -83,18 +113,7 @@ function clearForm() {
 
     const bookPub = frm.querySelector('input[name="book-pub"]');
     bookPub.value = "";
-    // frm.reset();
-}
 
-/**
- * 
- */
-async function getBooks() {
-    console.log("DOC ::: getBooks");
-    let response = await fetch(BOOKS_READ_URL);
-    let json = await response.json();
-    console.log(' - json:', json);
-    return json;
 }
 
 /**
@@ -105,10 +124,16 @@ function showBooks(books) {
     console.log("DOC ::: showBooks");
     let tmp = document.body.querySelector('template[name="tmp-table-row"]');
     let tbody = document.body.querySelector('#tb-books');
+
+    // remove existing books
+    while (tbody.firstChild) {
+        tbody.removeChild(tbody.firstChild);
+    }
+
     books.forEach(book => {
         let clone = tmp.content.cloneNode(true);
         let btns = clone.querySelectorAll('button');
-        let tds = clone.querySelectorAll('th,td');
+        let tds = clone.querySelectorAll('td');
         // console.log('tds:', tds);
         tds[0].innerText = book.id;
         tds[1].innerText = book.title;
@@ -191,19 +216,107 @@ function deleteBookClickHandler(event) {
     console.log("DOC ::: deleteBookClickHandler");
     let t = event.currentTarget;
     console.log(' - target:', t);
+    const inp = t.parentNode.querySelector('input');
+    console.log(' - input:', inp);
+    const data = inp.value;
+    console.log(' - data:', data);
+    const book = JSON.parse(data);
+
+    let msg = "Are you sure you want to delete this book?";
+    msg += "<p><pre>";
+    msg += "Title:" + book.title;
+    msg += "<br>";
+    msg += "Author: " + book.author;
+    msg += "</pre></p>";
+
+    bootbox.confirm(msg, (confirmed) => {
+        console.log("DOC ::: bootbox confirm");
+        console.log(' - confirmed:', confirmed);
+        if (confirmed) {
+            deleteBook(data).then(showBooks);
+        }
+    });
 
 }
 
-function displayData(e) {
-    let id = 0;
-    const td = $("#tbody tr td");
-    let textvalues = [];
+/************************
+ * 
+ * CRUD METHODS
+ * 
+ ************************/
 
-    for (const value of td) {
-        if (value.dataset.id == e.target.dataset.id) {
-            textvalues[id++] = value.textContent;
-        }
+/**
+ * Fetches book data from PHP
+ * 
+ * @returns Resolved Promise with list of books payload.
+ */
+async function getBooks() {
+    console.log("DOC ::: getBooks");
+    let response = await fetch(BOOKS_READ_URL);
+    let json = await response.json();
+    console.log(' - json:', json);
+    return json;
+}
+
+/**
+ * Adds book.
+ * Data is sent to PHP script which writes data to file.
+ *
+ * @param {*} book The new book data to add.
+ * @returns Resolved Promise with list of books payload.
+ */
+async function addBookAsync(book) {
+    console.log("DOC ::: addBook");
+    console.log(' - book:', book);
+    let json = JSON.stringify(book);
+    console.log(' - json:', json);
+    let headers = {
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json'
     }
-    return textvalues;
+    // Send data to PHP
+    let response = await fetch(BOOKS_CREATE_URL,
+        {
+            method: "POST",
+            headers: headers,
+            body: json
+        });
 
+    let data = await response.json();
+    return data;
+}
+
+/**
+ * Updates an existing book.
+ *
+ * @param {*} book The updated book.
+ */
+async function updateBook(book) {
+    console.log("DOC ::: updateBook");
+
+}
+
+/**
+ * Deletes a book from the list of books.
+ *
+ * @param {*} json The book to be removed, as JSON formatted string.
+ */
+async function deleteBook(json) {
+    console.log("DOC ::: deleteBook");
+    console.log(' - json:', json);
+
+    let headers = {
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json'
+    };
+
+    let response = await fetch(BOOKS_DELETE_URL,
+        {
+            method: "POST",
+            headers: headers,
+            body: json
+        });
+
+    let books = await response.json();
+    return books;
 }
