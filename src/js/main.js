@@ -1,10 +1,11 @@
-// Constants for PHP script locations.
-const BOOKS_READ_URL = "./php/books-read.php";
+
+// Constants for PHP CRUD script locations.
 const BOOKS_CREATE_URL = "./php/books-create.php";
+const BOOKS_READ_URL = "./php/books-read.php";
 const BOOKS_UPDATE_URL = "./php/books-update.php";
 const BOOKS_DELETE_URL = "./php/books-delete.php";
 
-// App state constants.
+// App state constants (only two of these are really needed/used).
 const STATE_CREATE = "state-create";
 const STATE_READ = "state-read";
 const STATE_UPDATE = "state-update";
@@ -32,16 +33,16 @@ window.addEventListener('DOMContentLoaded', (event) => {
     const btnCancel = document.body.querySelector('#btn-cancel');
     btnCancel.addEventListener('click', cancelClickHandler);
 
-    // Get things started
-
+    // Get things going by putting the app in the 'create' state.
     clearForm();
     setButtonState(STATE_CREATE);
+    // Fetch initial data and display it.
     getBooksAsync().then(showBooks);
 
 });
 
 /**
- *
+ * Event handler for the 'create book' (submit) button.
  *
  * @param {*} event The button click event.
  */
@@ -65,7 +66,8 @@ function createClickHandler(event) {
 }
 
 /**
- *
+ * Event handler for the 'clear' button. 
+ * Resets the form input fields to their initial values by calling `clearForm()`.
  *
  * @param {*} event The button click event.
  */
@@ -77,7 +79,7 @@ function clearClickHandler(event) {
 }
 
 /**
- *
+ * Event handler for the 'update book' button.
  *
  * @param {*} event The button click event.
  */
@@ -99,7 +101,8 @@ function updateClickHandler(event) {
 }
 
 /**
- *
+ * Event handler for the 'cancel update' button.
+ * Kicks the app from `update` state back into `create` state.
  *
  * @param {*} event The button click event.
  */
@@ -111,12 +114,13 @@ function cancelClickHandler(event) {
 }
 
 /**
- * Does what it says on the tin.
+ * Does exactly what it says on the tin.
  */
 function clearForm() {
     console.log("DOC ::: clearForm");
 
-    // There's no real 'form' element, so all input fields have to be reset directly.
+    //* As there is no real `<form>` element, all input fields have to be reset directly.
+    // ? May refactor this to use `querySelectorAll()` and loop over them.
 
     const frm = document.body.querySelector('#form-container');
 
@@ -236,8 +240,10 @@ function setButtonState(state) {
 }
 
 /**
+ * Displays books data. 
+ * Each book entry is added to an existing `<table>`, which is first cleared.
  * 
- * @param {*} books 
+ * @param {*} books The list of books to display.
  */
 function showBooks(books) {
     console.log("DOC ::: showBooks");
@@ -251,9 +257,12 @@ function showBooks(books) {
 
     books.forEach(book => {
         let clone = tmp.content.cloneNode(true);
+        // 'edit' and 'delete' buttons for table row
         let btns = clone.querySelectorAll('button');
+        // all cells for table row
         let tds = clone.querySelectorAll('td');
         // console.log('tds:', tds);
+        // TODO: Tempted to refactor table template with string literals.
         tds[0].innerText = book.id;
         tds[1].innerText = book.title;
         tds[2].innerText = book.author;
@@ -276,6 +285,9 @@ function showBooks(books) {
 }
 
 /**
+ * Event handler for 'edit book' button.
+ * Fills out the form with the selected book data and
+ * switches the app state to 'update'.
  * 
  * @param {*} event 
  */
@@ -316,6 +328,8 @@ function editBookClickHandler(event) {
 }
 
 /**
+ * Event handler for the 'delete book' button.
+ * Asks for user confirmation before removal.
  * 
  * @param {*} event 
  */
