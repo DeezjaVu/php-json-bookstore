@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<project name="PHP JSON Bookstore" default="default" basedir="../">
+<project name="PHP JSON Bookstore" default="run-all" basedir="../">
 
     <property name="DEST_PHP_DIR" location="C:/Users/Peter/Documents/php-root/php-json-bookstore" />
     <property name="XAMPP_HOME" location="C:/xampp" />
@@ -8,7 +8,7 @@
     <property name="FIREFOX" value="C:/Program Files/Mozilla Firefox/firefox.exe" />
     <property name="LOCALHOST" value="http://localhost:9090/projects/php-json-bookstore" />
 
-    <target name="default" depends="dest-create,dest-clean,src-copy">
+    <target name="run-all" depends="dest-create,dest-clean,src-copy">
         <echo message="Copies php project file(s) to local php server." />
     </target>
 

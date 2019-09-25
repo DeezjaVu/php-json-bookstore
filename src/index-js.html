@@ -64,8 +64,8 @@
                                 <i class="fas fa-euro-sign"></i>
                             </div>
                         </div>
-                        <input type="number" name="book-price" id="book-price" class="form-control" placeholder="0"
-                            min="0" max="1000" step="0.01">
+                        <input type="number" name="book-price" id="book-price" class="form-control" placeholder="0.00"
+                            min="0" max="1000" step="0.01" required>
                     </div>
                 </div>
 
@@ -105,14 +105,14 @@
                         <input type="text" name="book-pub" id="book-pub" class="form-control" placeholder="publisher"
                             required>
                     </div>
-
                 </div>
 
                 <!-- CRUD BUTTONS -->
                 <div class="d-flex justify-content-end">
+                    <!-- FIXME: combine buttons - reduce to two buttons -->
                     <button id="btn-create" class="btn btn-light border">Submit</button>
-                    <button id="btn-update" class="btn btn-light border">Update</button>
                     <button id="btn-clear" class="btn btn-light border">Clear</button>
+                    <button id="btn-update" class="btn btn-light border">Update</button>
                     <button id="btn-cancel" class="btn btn-light border">Cancel</button>
                     <!-- <button id="btn-delete" class="btn btn-danger">Delete</button> -->
                 </div>

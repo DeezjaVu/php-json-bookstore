@@ -10,7 +10,7 @@ const STATE_READ = "state-read";
 const STATE_UPDATE = "state-update";
 const STATE_DELETE = "state-delete";
 
-// Keep track of app state
+// Keep track of app state (currently not used/needed)
 let currentState = STATE_CREATE;
 
 /**
@@ -19,127 +19,106 @@ let currentState = STATE_CREATE;
 window.addEventListener('DOMContentLoaded', (event) => {
     console.log("DOC ::: DOMContentLoaded");
 
+    // Set up form buttons
     const btnCreate = document.body.querySelector('#btn-create');
-    // btnCreate.classList.add('btn-hide');
-    btnCreate.addEventListener('click', (event) => {
-        console.log("DOC ::: btn-create click");
-        event.preventDefault();
-        const t = event.target;
-        const inTitle = document.body.querySelector('input[name="book-title"]');
-        const inAuthor = document.body.querySelector('input[name="book-author"]');
-        const inPub = document.body.querySelector('input[name="book-pub"]');
-        const inPrice = document.body.querySelector('input[name="book-price"]');
-
-        const valTitle = inTitle.value;
-        const valAuthor = inAuthor.value;
-        const valPub = inPub.value;
-        const valPrice = parseFloat(inPrice.value);
-
-        // FIXME: validate input (or not)
-        const book = {
-            title: valTitle,
-            author: valAuthor,
-            publisher: valPub,
-            price: valPrice
-        }
-        console.log(' - add book:', book);
-
-        addBookAsync(book).then(showBooks);
-        clearForm();
-    });
+    btnCreate.addEventListener('click', createClickHandler);
 
     const btnClear = document.body.querySelector('#btn-clear');
-    // btnClear.classList.add('btn-hide');
-    btnClear.addEventListener('click', (event) => {
-        console.log("DOC ::: btn-clear click");
-        event.preventDefault();
-        const t = event.target;
-        clearForm();
-    });
+    btnClear.addEventListener('click', clearClickHandler);
 
     const btnUpdate = document.body.querySelector('#btn-update');
-    btnUpdate.classList.add('btn-hide');
-    btnUpdate.addEventListener('click', async (event) => {
-        console.log("DOC ::: btn-update click");
-        event.preventDefault();
-        const t = event.target;
-        const inId = document.body.querySelector('input[name="book-id"]');
-        const inTitle = document.body.querySelector('input[name="book-title"]');
-        const inAuthor = document.body.querySelector('input[name="book-author"]');
-        const inPub = document.body.querySelector('input[name="book-pub"]');
-        const inPrice = document.body.querySelector('input[name="book-price"]');
-
-        const valId = inId.value;
-        const valTitle = inTitle.value;
-        const valAuthor = inAuthor.value;
-        const valPub = inPub.value;
-        const valPrice = parseFloat(inPrice.value);
-
-        // FIXME: validate input (or not).
-        const book = {
-            id: valId,
-            title: valTitle,
-            author: valAuthor,
-            publisher: valPub,
-            price: valPrice
-        }
-        console.log(' - update book:', book);
-
-        // updateBookAsync(book).then(showBooks);
-        const books = await updateBookAsync(book);
-        console.log(' - books:', books);
-        // Display updated books.
-        showBooks(books);
-
-        const subTitle = document.body.querySelector('#sub-title');
-        subTitle.innerText = "Add Book";
-
-        btnUpdate.classList.add('btn-hide');
-        btnCancel.classList.add('btn-hide');
-
-        btnCreate.classList.remove('btn-hide');
-        btnClear.classList.remove('btn-hide');
-
-        setButtonState(STATE_CREATE);
-
-        clearForm();
-
-    });
+    btnUpdate.addEventListener('click', updateClickHandler);
 
     const btnCancel = document.body.querySelector('#btn-cancel');
-    btnCancel.classList.add('btn-hide');
-    btnCancel.addEventListener('click', (event) => {
-        console.log("DOC ::: btn-create click");
-        event.preventDefault();
+    btnCancel.addEventListener('click', cancelClickHandler);
 
-        const subTitle = document.body.querySelector('#sub-title');
-        subTitle.innerText = "Add Book";
-
-        btnUpdate.classList.add('btn-hide');
-        btnCancel.classList.add('btn-hide');
-
-        btnCreate.classList.remove('btn-hide');
-        btnClear.classList.remove('btn-hide');
-        clearForm();
-    })
+    // Get things started
 
     clearForm();
-
+    setButtonState(STATE_CREATE);
     getBooksAsync().then(showBooks);
 
 });
 
 /**
- * 
+ *
+ *
+ * @param {*} event The button click event.
+ */
+function createClickHandler(event) {
+    console.log("DOC ::: createClickHandler");
+    event.preventDefault();
+    const t = event.target;
+
+    let isValid = validateForm();
+    console.log(' - is valid:', isValid);
+
+    if (isValid) {
+        const book = getFormData();
+        console.log(' - add book:', book);
+        // Add new book, then show new list of books.
+        addBookAsync(book).then(showBooks);
+        clearForm();
+    } else {
+        bootbox.alert({ title: "Add Book:", message: "Missing required input." });
+    }
+}
+
+/**
+ *
+ *
+ * @param {*} event The button click event.
+ */
+function clearClickHandler(event) {
+    console.log("DOC ::: clearClickHandler");
+    event.preventDefault();
+    const t = event.target;
+    clearForm();
+}
+
+/**
+ *
+ *
+ * @param {*} event The button click event.
+ */
+function updateClickHandler(event) {
+    console.log("DOC ::: updateClickHandler");
+    event.preventDefault();
+    const t = event.target;
+    const isValid = validateForm();
+    if (isValid) {
+        const book = getFormData();
+        console.log(' - update book:', book);
+        // Update books and display result (new list of books)
+        updateBookAsync(book).then(showBooks);
+        setButtonState(STATE_CREATE);
+        clearForm();
+    } else {
+        bootbox.alert({ title: "Update Book:", message: "Missing required input." });
+    }
+}
+
+/**
+ *
+ *
+ * @param {*} event The button click event.
+ */
+function cancelClickHandler(event) {
+    console.log("DOC ::: cancelClickHandler");
+    event.preventDefault();
+    setButtonState(STATE_CREATE);
+    clearForm();
+}
+
+/**
+ * Does what it says on the tin.
  */
 function clearForm() {
     console.log("DOC ::: clearForm");
 
-    const frm = document.body.querySelector('#form-container');
-    // frm.reset();
+    // There's no real 'form' element, so all input fields have to be reset directly.
 
-    // May remove the form element, in which case 
-    // all input fields have to be reset directly
+    const frm = document.body.querySelector('#form-container');
 
     const bookId = frm.querySelector('input[name="book-id"]');
     bookId.value = "";
@@ -158,24 +137,102 @@ function clearForm() {
 
 }
 
+/**
+ *
+ *
+ * @returns boolean
+ */
+function validateForm() {
+    console.log("DOC ::: validateForm");
+    let isValid = true;
+    // Only grab required input 'type=text' fields. Grab required number input fields separately
+    const fields = document.body.querySelectorAll('input[type="text"][required]');
+    console.log(' - input fields:', fields);
+    const len = fields.length;
+    for (let i = 0; i < len; i++) {
+        const f = fields[i];
+        const v = f.value.trim();
+        if (v == "") {
+            isValid = false;
+            break;
+        }
+    }
+    const numField = document.body.querySelector('input[type="number"][required]');
+    const numValue = parseFloat(numField.value);
+    // console.log(' - not a number:', isNaN(numValue));
+
+    if (isNaN(numValue) || numValue == 0) {
+        isValid = false;
+    }
+    return isValid;
+}
+
+/**
+ * Gathers all form data and returns it as a plain vanilla object.
+ *
+ * @returns form data as vanilla object
+ */
+function getFormData() {
+    console.log("DOC ::: getFormData");
+
+    const fid = document.body.querySelector('input[name="book-id"]');
+    const fTitle = document.body.querySelector('input[name="book-title"]');
+    const fAuthor = document.body.querySelector('input[name="book-author"]');
+    const fPub = document.body.querySelector('input[name="book-pub"]');
+    const fPrice = document.body.querySelector('input[name="book-price"]');
+
+    const bookId = fid.value.trim();
+    const bookTitle = fTitle.value.trim();
+    const bookAuthor = fAuthor.value.trim();
+    const bookPub = fPub.value.trim();
+    const bookPrice = parseFloat(fPrice.value);
+
+    const book = {
+        id: bookId,
+        title: bookTitle,
+        author: bookAuthor,
+        publisher: bookPub,
+        price: bookPrice
+    }
+    console.log(' - book:', book);
+    return book;
+}
+
+/**
+ * Switches form buttons (show/hide) depending on app state.
+ * 
+ * @param {*} state The state to which to switch.
+ */
 function setButtonState(state) {
     console.log("DOC ::: setButtonState");
     console.log(' - state:', state);
 
-    const btnUpdate = document.body.querySelector();
+    const subTitle = document.body.querySelector('#sub-title');
+
+    const btnCreate = document.body.querySelector('#btn-create');
+    const btnClear = document.body.querySelector('#btn-clear');
+
+    const btnUpdate = document.body.querySelector('#btn-update');
+    const btnCancel = document.body.querySelector('#btn-cancel');
 
     if (state === STATE_CREATE) {
-        const subTitle = document.body.querySelector('#sub-title');
         subTitle.innerText = "Add Book";
-
+        // hide 'update' and 'cancel' buttons
         btnUpdate.classList.add('btn-hide');
         btnCancel.classList.add('btn-hide');
-
+        // show 'create' and 'clear' buttons
         btnCreate.classList.remove('btn-hide');
         btnClear.classList.remove('btn-hide');
-
-
+    } else if (state == STATE_UPDATE) {
+        subTitle.innerText = "Update Book";
+        // show 'update' and 'cancel' buttons
+        btnUpdate.classList.remove('btn-hide');
+        btnCancel.classList.remove('btn-hide');
+        // hide 'create' and 'clear' buttons
+        btnCreate.classList.add('btn-hide');
+        btnClear.classList.add('btn-hide');
     }
+
 }
 
 /**
@@ -254,22 +311,7 @@ function editBookClickHandler(event) {
     const bookPrice = document.body.querySelector('input[name="book-price"]');
     bookPrice.value = data.price.toFixed(2);
 
-    // Show 'Update' and 'Cancel' button
-    const btnUpdate = document.body.querySelector('#btn-update');
-    btnUpdate.classList.remove('btn-hide');
-
-    const btnCancel = document.body.querySelector('#btn-cancel');
-    btnCancel.classList.remove('btn-hide');
-
-    // Hide 'Submit' and 'Clear' buttons
-    const btnCreate = document.body.querySelector('#btn-create');
-    btnCreate.classList.add('btn-hide');
-
-    const btnClear = document.body.querySelector('#btn-clear');
-    btnClear.classList.add('btn-hide');
-
-    const subTitle = document.body.querySelector('#sub-title');
-    subTitle.innerText = "Update Book";
+    setButtonState(STATE_UPDATE);
 
 }
 
@@ -311,7 +353,12 @@ function deleteBookClickHandler(event) {
             console.log("DOC ::: bootbox confirm");
             console.log(' - confirmed:', confirmed);
             if (confirmed) {
-                // deleteBook(data).then(showBooks);
+                // Remove selected book.
+                deleteBook(data).then(showBooks);
+                // Reset form (in case the removed book was displayed)
+                clearForm();
+                // Go back to 'Add Book' state
+                setButtonState(STATE_CREATE);
             }
         }
     });
@@ -327,7 +374,7 @@ function deleteBookClickHandler(event) {
 /**
  * Fetches book data from PHP.
  * 
- * @returns Resolved Promise with list of books payload.
+ * @returns {Promise} List of books when Promise is resolved.
  */
 async function getBooksAsync() {
     console.log("DOC ::: getBooksAsync");
@@ -342,7 +389,7 @@ async function getBooksAsync() {
  * Data is sent to PHP script which writes data to file.
  *
  * @param {*} book The new book data to add.
- * @returns Resolved Promise with list of books payload.
+ * @returns {Promise} List of books when Promise is resolved.
  */
 async function addBookAsync(book) {
     console.log("DOC ::: addBook");
@@ -369,6 +416,7 @@ async function addBookAsync(book) {
  * Updates an existing book.
  *
  * @param {*} book The updated book.
+ * @returns {Promise} Promise The new list of books when resolved.
  */
 async function updateBookAsync(book) {
     console.log("DOC ::: updateBookAsync");
@@ -383,14 +431,15 @@ async function updateBookAsync(book) {
             headers: headers,
             body: jbook
         });
-    const data = await response.json();
-    return data;
+    const books = await response.json();
+    return books;
 }
 
 /**
  * Deletes a book from the list of books.
  *
  * @param {*} json The book to be removed, as JSON formatted string.
+ * @returns {Promise} List of books when Promise is resolved.
  */
 async function deleteBook(json) {
     console.log("DOC ::: deleteBook");
