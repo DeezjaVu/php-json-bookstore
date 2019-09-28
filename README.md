@@ -12,5 +12,4 @@ If you're familiar with [Apache Ant](https://ant.apache.org/), there's a `build.
 
 ## The Project
 
-The index page is not a `.php` page, but a plain `.html` page, which ensures a clear separation (decoupling) between HTML/CSS/JS and PHP. 
-
+The index page is not a `.php` page, but a plain `.html` page to ensure a clear separation (decoupling) between HTML/CSS/JS and PHP. 

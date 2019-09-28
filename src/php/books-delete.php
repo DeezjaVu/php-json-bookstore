@@ -1,5 +1,10 @@
 <?php
 
+header("Content-Type: application/json; charset=UTF-8");
+header("Access-Control-Allow-Methods: POST");
+header("Access-Control-Max-Age: 3600");
+header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+
 define("BOOKS_URL", "../data/books.json");
 
 // Read JSON file.
@@ -11,7 +16,7 @@ $books = json_decode($json);
 $data = json_decode(file_get_contents("php://input"));
 
 foreach ($books as $key => $value) {
-    if($value -> id == $data -> id){
+    if ($value->id == $data->id) {
         // echo "found matching book -> value: ", $value -> id, " key: ", $key;
         // unset($books[$key]);
         array_splice($books, $key, 1);
@@ -23,9 +28,8 @@ foreach ($books as $key => $value) {
 $jbooks = json_encode($books);
 file_put_contents(BOOKS_URL, $jbooks);
 
-
 // Adjust header to output JSON data.
-header('Content-Type: application/json');
+// header('Content-Type: application/json');
 
 echo $jbooks;
 
