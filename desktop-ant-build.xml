@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<project name="PHP JSON Bookstore" default="run-all" basedir="../">
+<project name="PHP JSON Bookstore" default="run-all" basedir=".">
 
     <property name="DEST_PHP_DIR" location="D:/Projects/DeezjaVu/obelisk/php-json-bookstore" />
     <property name="XAMPP_HOME" location="D:/xampp" />
@@ -46,11 +46,6 @@
 
     <target name="apache-start" description="Start Apache Server">
         <exec executable="${XAMPP_HOME}/xampp_start.exe" spawn="false">
-        </exec>
-    </target>
-
-    <target name="apache-stop" description="Start Apache Server">
-        <exec executable="${XAMPP_HOME}/xampp_stop.exe" spawn="false">
         </exec>
     </target>
 
