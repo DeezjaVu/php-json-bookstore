@@ -130,11 +130,12 @@ What happens here is:
 
 * Remove any existing children from the table body (`tbody.removeChild()`).
 * Loop through the list of `books` that we just received.
-* For each book, create a template clone (which represents a table row).
-* Populate the table row with the book's data.
-* Define event handlers for the update and delete button for each table row.
-* Store the book data as `json` in a hidden `input` field so we can access it later (e.g. when the update or delete button is clicked).
-* Add the table row to the table body.
+* For each book:
+  * Create a template clone (which represents a table row).
+  * Populate the table row with the book's data.
+  * Define event handlers for the update and delete button for each table row.
+  * Store the book data as `json` in a hidden `input` field so we can access it later (e.g. when the update or delete button is clicked).
+  * Add the table row to the table body.
 
 The one thing you may not be familiar with is the `template clone` part. It's a nice, easy and clean way to predefine html snippets for later use. And even though they are defined in the `<body>` of the document, they are not rendered by the browser. They're basically just sitting there waiting to be cloned.
 
@@ -160,6 +161,7 @@ The one thing you may not be familiar with is the `template clone` part. It's a 
 </template>
 ```
 
+Let's take a look at the two events (edit, delete) that can be triggered from each table row.
 
 ```javascript
 function editBookClickHandler(event) {

@@ -49,4 +49,9 @@
         </exec>
     </target>
 
+    <target name="apache-stop" description="Stop Apache Server">
+        <exec executable="${XAMPP_HOME}/xampp_stop.exe" spawn="false">
+        </exec>
+    </target>
+
 </project>
