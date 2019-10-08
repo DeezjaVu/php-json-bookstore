@@ -23,7 +23,7 @@ The index page is not a `.php` page, but a plain `.html` page to ensure a clear 
 ### PHP
 
 * Handles the data.
-* Acts as a go-between between JS and MySQL.
+* Acts as a go-between between JS and JSON storage.
 
 ### The Code
 
