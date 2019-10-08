@@ -238,4 +238,50 @@ One odd thing you might notice is the ``const msg = `html formatted string here`
 
 ![Delete Book Confirmation](img/book-delete-confirm.png)
 
-When the user confirms the deletion, another asynchronous method, `deleteBook`, is called followed by `showBooks`. Last but not least we put the app back in the 'create book' state, regardless of what state it currently is in. This is to make sure that the book we're deleting isn't currently selected - and thus displayed in the form - as it will no longer exist and is therefor not updatable.
+When the user confirms the deletion, another asynchronous method, `deleteBook`, is called followed by `showBooks`. Last but not least the app state is switched to the 'create book' state, regardless of what state it currently is in. This is to make sure that the book we're deleting isn't currently selected - and thus displayed in the form - as it will no longer exist and is therefor not updatable.
+
+Next up are the form button event handlers:
+
+* `createClickHandler` &mdash; Used in the 'create' state to submit a new book.
+* `clearClickHandler` &mdash; Used in the 'create' state to clear the form.
+* `updateClickHandler` &mdash; Used in the 'update' state to submit altered book.
+* `cancelClickHandler` &mdash; Used in the 'update' state to clear the form.
+
+In a real world application, there would only be two methods instead of four and based on the app state (create vs update) they'd perform a different task. But since this is not about writing the perfect app, I decided to keep them split up.
+
+The only significant difference between `createClickHandler` and `updateClickHandler` is the asynchronous method they invoke, one being `addBookAsync(book).then(showBooks);`, the other `updateBookAsync(book).then(showBooks);`.
+
+We've already looked at the `getBooksAsync` method, which leaves three more methods to complete the CRUD acronym.
+
+* `addBookAsync`
+* `updateBookAsync`
+* `deleteBookAsync`
+
+While `getBooksAsync` only retrieves data, the other three both send and receive data from PHP. And to do so, the fetch() method requires a few more parameters.
+
+```javascript
+const headers = {
+  'Accept': 'application/json, text/plain, */*',
+  'Content-Type': 'application/json'
+}
+// Send data to PHP
+const response = await fetch(BOOKS_CREATE_URL,
+  {
+    method: "POST",
+    headers: headers,
+    body: json
+  });
+```
+
+And each of those methods waits for a response back from PHP, which is a new list of books.
+
+```javascript
+const books = await response.json();
+return books;
+```
+
+The returned books are passed onto `showBooks`, which completes the circle.
+
+### PHP Scripts
+
+Not much to say really. Each PHP script simply responds to calls from Javascript to perform one of the CRUD actions and when done returns a list of books.

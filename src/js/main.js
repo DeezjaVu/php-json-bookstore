@@ -49,9 +49,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
 function createClickHandler(event) {
     console.log("DOC ::: createClickHandler");
     event.preventDefault();
-    const t = event.target;
-
-    let isValid = validateForm();
+    const isValid = validateForm();
     console.log(' - is valid:', isValid);
 
     if (isValid) {
@@ -86,8 +84,9 @@ function clearClickHandler(event) {
 function updateClickHandler(event) {
     console.log("DOC ::: updateClickHandler");
     event.preventDefault();
-    const t = event.target;
     const isValid = validateForm();
+    console.log(' - is valid:', isValid);
+
     if (isValid) {
         const book = getFormData();
         console.log(' - update book:', book);
@@ -119,7 +118,7 @@ function cancelClickHandler(event) {
 function clearForm() {
     console.log("DOC ::: clearForm");
 
-    //* As there is no real `<form>` element, all input fields have to be reset directly.
+    // * As there is no real `<form>` element, all input fields have to be reset directly.
     // ? May refactor this to use `querySelectorAll()` and loop over them.
 
     const frm = document.body.querySelector('#form-container');
@@ -138,7 +137,6 @@ function clearForm() {
 
     const bookPub = frm.querySelector('input[name="book-pub"]');
     bookPub.value = "";
-
 }
 
 /**
@@ -368,7 +366,7 @@ function deleteBookClickHandler(event) {
             console.log(' - confirmed:', confirmed);
             if (confirmed) {
                 // Remove selected book.
-                deleteBook(data).then(showBooks);
+                deleteBookAsync(data).then(showBooks);
                 // Reset form (in case the removed book was displayed)
                 clearForm();
                 // Go back to 'Add Book' state
@@ -455,8 +453,8 @@ async function updateBookAsync(book) {
  * @param {*} json The book to be removed, as JSON formatted string.
  * @returns {Promise} List of books when Promise is resolved.
  */
-async function deleteBook(json) {
-    console.log("DOC ::: deleteBook");
+async function deleteBookAsync(json) {
+    console.log("DOC ::: deleteBookAsync");
     console.log(' - json:', json);
 
     let headers = {
