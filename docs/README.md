@@ -282,6 +282,6 @@ return books;
 
 The returned books are passed onto `showBooks`, which completes the circle.
 
-### PHP Scripts
+#### PHP Scripts
 
 Not much to say really. Each PHP script simply responds to calls from Javascript to perform one of the CRUD actions and when done returns a list of books.
