@@ -163,6 +163,8 @@ The one thing you may not be familiar with is the `template clone` part. It's a 
 
 Let's take a look at the two events (edit, delete) that can be triggered from each table row.
 
+##### Edit book
+
 ```javascript
 function editBookClickHandler(event) {
   // Use event.currentTarget instead of event.target to avoid getting child node(s), e.g. the button icon.
@@ -186,3 +188,54 @@ function editBookClickHandler(event) {
   setButtonState(STATE_UPDATE);
 }
 ```
+
+Earlier, in the `showBooks` method, we stored the book's data in a hidden input field. And here's where we retrieve that data, decode it, and display it in the form fields for editing. So it's basically a bunch of `input-field-value equals book-property-value` assignments. Lastly we put the application in the `update` state.
+
+And each table row also has a `delete` button, which triggers the `deleteBookClickHandler` method (or event handler if you like).
+
+##### Delete book
+
+```javascript
+function deleteBookClickHandler(event) {
+  let t = event.currentTarget;
+  const inp = t.parentNode.querySelector('input');
+  const data = inp.value;
+  const book = JSON.parse(data);
+
+  const msg = `
+    <div class="container">
+      <h6>Are you sure you want to delete this book?</h6>
+      <div class="row">
+        <div class="col-2 text-right">Title:</div>
+          <div class="col"><code>${book.title}</code></div>
+        </div>
+        <div class="row">
+          <div class="col-2 text-right">Author:</div>
+          <div class="col"><code>${book.author}</code></div>
+      </div>
+    </div>`;
+
+  bootbox.confirm({
+    title: "Delete Book:",
+    message: msg,
+    callback: (confirmed) => {
+      if (confirmed) {
+        // Remove selected book.
+        deleteBook(data).then(showBooks);
+        // Reset form (in case the removed book was displayed)
+        clearForm();
+        // Go back to 'Add Book' state
+        setButtonState(STATE_CREATE);
+      }
+    }
+  });
+}
+```
+
+Rather than deleting the selected book as soon as the user clicked the button, we want to make sure the user actually wants to delete it. This is typically done by throwing a modal confirmation box up on the screen with an `OK` and `Cancel` (or `Yes/No`) option. And rather than creating my own message box, I looked around a bit and found [bootbox](http://bootboxjs.com/), which is pretty straight forward to use. 
+
+One odd thing you might notice is the ``const msg = `html formatted string here` `` part. Note that the html formatted string is surrounded by backticks rather than double or single quotes. This is called a `Template literal` or `Template string`. So rather than passing a simple string text message to `bootbox.confirm()`, you can pass a string literal and have it display custom HTML &mdash; including Bootstrap css styling &mdash; which then looks like this:
+
+![Delete Book Confirmation](img/book-delete-confirm.png)
+
+When the user confirms the deletion, another asynchronous method, `deleteBook`, is called followed by `showBooks`. Last but not least we put the app back in the 'create book' state, regardless of what state it currently is in. This is to make sure that the book we're deleting isn't currently selected - and thus displayed in the form - as it will no longer exist and is therefor not updatable.
