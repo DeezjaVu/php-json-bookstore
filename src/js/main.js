@@ -295,14 +295,14 @@ function editBookClickHandler(event) {
     console.log("DOC ::: editBookClickHandler");
 
     // Use currentTarget to avoid getting child node(s), e.g. the button icon.
-    let t = event.currentTarget;
+    const t = event.currentTarget;
     console.log(' - target:', t);
 
     const inp = t.parentNode.querySelector('input');
     console.log(' - input:', inp);
 
     const val = inp.value;
-    let data = JSON.parse(val);
+    const data = JSON.parse(val);
     console.log(' - data:', data);
 
     const bookId = document.body.querySelector('input[name="book-id"]');
@@ -393,9 +393,9 @@ function deleteBookClickHandler(event) {
 async function getBooksAsync() {
     console.log("DOC ::: getBooksAsync");
     let response = await fetch(BOOKS_READ_URL);
-    let json = await response.json();
-    console.log(' - json:', json);
-    return json;
+    let books = await response.json();
+    console.log(' - books:', books);
+    return books;
 }
 
 /**
