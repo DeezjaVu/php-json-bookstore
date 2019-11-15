@@ -8,7 +8,7 @@
             "type": "process",
             "command": "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe",
             "args": [
-                "http://localhost:9090/gip/php-json-crud"
+                "http://localhost:9090/"
             ],
             "group": {
                 "kind": "test",
@@ -20,9 +20,15 @@
             "type": "process",
             "command": "C:/Program Files/Mozilla Firefox/firefox.exe",
             "args": [
-                "http://localhost:9090/gip/php-json-crud"
+                "http://localhost:9090/"
             ],
             "group": "test"
+        },
+        {
+            "label": "PHP DEV",
+            "type": "shell",
+            "command": "php -S localhost:9090 -t src",
+            "problemMatcher": []
         }
     ]
 }
